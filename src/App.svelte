@@ -1,29 +1,70 @@
 <script>
-	export let name;
+	import { onMount } from 'svelte'
+
+	const baseURL = 'https://jservice.io/api/'
+
+	$: categories = []
+
+	const calcCategories = (quantity) => {
+		let results = []
+		for (let i = 0; i < quantity; i++) {
+			results.push(Math.floor(Math.random() * Math.floor(17000)) + 1)
+		}
+		return results
+	}
+
+	const getData = (ids) => {
+		console.log(ids)
+		for (let id of ids) {
+			console.log(id)
+			fetch(baseURL + `category?id=${id}`)
+			.then(response => response.json())
+			.then(data => {
+				categories = [...categories, {
+					title: data.title,
+					id: data.id,
+					questions: data.clues.map(clue => ({
+							id: clue.id,
+							value: clue.value,
+							question: clue.question,
+							answer: clue.answer
+						}
+					))
+				}]
+			})
+		}
+
+		console.log(categories)
+		
+	}
+
+	onMount(async () => getData(calcCategories(5)))
+
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<div class="App">
+	<nav>Score: 0. High score?</nav>
+	<div class="tileArea">
+		{#if categories.length === 5}
+			{#each categories as category, i}
+				<div class="tile">
+					{category.title}
+				</div>
+			{/each}
+		{/if}
+	</div>
+</div>
 
 <style>
-	main {
+	.App {
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
 	@media (min-width: 640px) {
-		main {
+		.App {
 			max-width: none;
 		} 
 	}

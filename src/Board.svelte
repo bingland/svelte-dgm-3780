@@ -103,7 +103,7 @@
             <div class="col">
                 <div class="category tile" >{category.title}</div>
                 {#each Array(5) as _, j}
-                    <div class="score tile" on:click={() => selectTile(categories[i].clues[j])} >{(j + 1) * 200} {`${i} ${j}`}</div>
+                    <div class="score tile" on:click={() => selectTile(categories[i].clues[j])} >{(j + 1) * 200}</div>
                 {/each}
             </div>
         {/each}
@@ -116,7 +116,6 @@
 
 <style>
     .Board {
-        border: 1px solid black;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         text-align: center;

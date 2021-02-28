@@ -1,11 +1,13 @@
 <script>
 	import { onMount } from 'svelte'
+    import Answer from './Answer.svelte'
 
     const baseURL = 'https://jservice.io/api/'
 
     let categories = []
-    let clues = []
     let gameReady = false
+    let answering = false
+    let selectedClue = null;
 
     const calcCategories = (quantity) => {
         let results = []
@@ -43,7 +45,7 @@
 
     $: if (categories.length === 5) {
         console.log('======= RETRYING =======')
-        clues = []
+        let clues = []
         let indexes = categories.map(category => category.id)
         console.log(indexes)
         let recalc = false
@@ -73,7 +75,8 @@
 
         }  
 
-        console.log(clues)
+        categories = clues
+        console.log(categories)
 
         if (recalc) {
             getData(indexes)
@@ -83,7 +86,14 @@
         }
     }
     
+    const disableTile = () => {
+        answering = false
+    }
 
+    const selectTile = (clue) => {
+        answering = true
+        selectedClue = clue
+    }
     
 </script>
 
@@ -91,13 +101,16 @@
     <div class="Board"> 
         {#each categories as category, i}
             <div class="col">
-                <div class="category tile">{category.title}</div>
-                {#each Array(5) as _, i}
-                    <div class="score tile">{(i + 1) * 200}</div>
+                <div class="category tile" >{category.title}</div>
+                {#each Array(5) as _, j}
+                    <div class="score tile" on:click={() => selectTile(categories[i].clues[j])} >{(j + 1) * 200} {`${i} ${j}`}</div>
                 {/each}
             </div>
         {/each}
     </div>
+    {#if answering}
+        <Answer on:click={disableTile} selectedClue={selectedClue} />
+    {/if}
 {/if}
 
 

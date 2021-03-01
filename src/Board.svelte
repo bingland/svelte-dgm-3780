@@ -8,7 +8,6 @@
     let gameReady = false
     let answering = false
     let selectedClue = null;
-    $: console.log(selectedClue)
 
     const calcCategories = (quantity) => {
         let results = []
@@ -35,7 +34,8 @@
                             value: clue.value,
                             question: clue.question,
                             answer: clue.answer,
-                            category: data.title
+                            category: data.title,
+                            selectable: true
                         }
                     ))
                 }]
@@ -45,7 +45,7 @@
 
 	onMount(async () => getData(calcCategories(5)))
 
-    $: if (categories.length === 5) {
+    $: if (categories.length === 5 && !gameReady) {
         console.log('======= RETRYING =======')
         let clues = []
         let indexes = categories.map(category => category.id)
@@ -93,19 +93,23 @@
     }
 
     const selectTile = (clue) => {
-        answering = true
-        selectedClue = clue
+        if (clue.selectable) {
+            answering = true
+            selectedClue = clue
+            clue.selectable = false
+            categories = categories
+        } 
     }
     
 </script>
 
 {#if gameReady}
     <div class="Board"> 
-        {#each categories as category, i}
+        {#each categories as category, j}
             <div class="col">
                 <div class="category tile" >{category.title}</div>
-                {#each Array(5) as _, j}
-                    <div class="score tile" on:click={() => selectTile(categories[i].clues[j])} >{(j + 1) * 200}</div>
+                {#each Array(5) as _, k}
+                    <div class="tile {categories[j].clues[k].selectable ? 'enabled' : 'disabled'}" on:click={() => selectTile(categories[j].clues[k])} >{(k + 1) * 200}</div>
                 {/each}
             </div>
         {/each}
@@ -121,9 +125,12 @@
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         text-align: center;
+        grid-gap: 7px;
     }
     .col { 
-        
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 7px;
     }
     .tile {
         height: 100px;
@@ -131,17 +138,23 @@
         border: 1px solid grey;
         display: grid;
         align-items: center;
+        border-radius: 10px;
+        font-size: 60px;
     }
     .category {
-        font-size: 30px;
-        /* text-transform: uppercase; */
+        font-size: 25px;
+        text-transform: capitalize;
+        background-color: lightsteelblue;
     }
-    .score {
-        font-size: 70px;
-    }
-    .score:hover {
-        background-color: white;
+    .enabled {
         cursor: pointer;
+    }
+    .enabled:hover {
+        background-color: white;
+    }
+    .disabled {
+        background-color: white;
+        cursor: default;
     }
     
 </style>

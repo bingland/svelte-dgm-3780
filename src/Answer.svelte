@@ -61,12 +61,11 @@
     }
     .categoryText {
         font-size: 30px;
-        padding-bottom: 30px;
         text-transform: capitalize;
     }
     .questionText {
         font-size: 60px;
-        padding-bottom: 30px;
+        padding: 40px 20px 50px 20px;
     }
     .answerText {
         font-size: 30px;
@@ -79,8 +78,13 @@
         font-size: 300px;
     }
     input, button {
-        font-size: 30px;
+        font-size: 25px;
         padding: 10px;
+        border-radius: 5px;
+        border: 1px solid rgb(85, 85, 85);
+        margin-right: 5px;
+    }
+    input {
     }
 
     

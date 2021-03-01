@@ -8,6 +8,7 @@
     let gameReady = false
     let answering = false
     let selectedClue = null;
+    $: console.log(selectedClue)
 
     const calcCategories = (quantity) => {
         let results = []
@@ -33,7 +34,8 @@
                             id: clue.id,
                             value: clue.value,
                             question: clue.question,
-                            answer: clue.answer
+                            answer: clue.answer,
+                            category: data.title
                         }
                     ))
                 }]
@@ -120,7 +122,7 @@
         grid-template-columns: repeat(5, 1fr);
         text-align: center;
     }
-    .col {
+    .col { 
         
     }
     .tile {

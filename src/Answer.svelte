@@ -1,6 +1,7 @@
 <script>
-    export let selectedClue;
-    // TODO: get category name via props
+    export let selectedClue
+    export let wrongAnswer, correctAnswer
+
     let {question, answer, value, category} = selectedClue
 
     let result = null
@@ -9,14 +10,18 @@
 
     const submitAnswer = () => {
         showAnswer = true
-        //result = userAnswer.toLowerCase() == answer.toLowerCase()
         result = false
         // check answer; check if difference between answer is just an article
         if (userAnswer.toLowerCase() == answer.toLowerCase() 
-        || answer.toLowerCase().includes('the ', 0) 
-        || answer.toLowerCase().includes('a ', 0) 
-        || answer.toLowerCase().includes('an ', 0))
+        || (answer.toLowerCase().includes('the ', 0) && answer.toLowerCase().substr(4) == answer.toLowerCase()) 
+        || (answer.toLowerCase().includes('a ', 0) && answer.toLowerCase().substr(2) == answer.toLowerCase())
+        || (answer.toLowerCase().includes('an ', 0) && answer.toLowerCase().substr(3) == answer.toLowerCase())
+        || (answer.toLowerCase().includes('to ', 0) && answer.toLowerCase().substr(3) == answer.toLowerCase())) {
             result = true
+            correctAnswer(value)
+        } else {
+            wrongAnswer()
+        }
     }
 </script>
 
@@ -43,13 +48,19 @@
 </div>
 
 <style>
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
     .Answer {
-        background-color: lightcoral;
+        background-color: white;
         height: 100%;
         width: 100%;
         position: absolute;
         top: 0; 
         left: 0;
+        animation: fadeIn ease 0.25s;
     }
     .textWrapper {
         max-width: 1200px;

@@ -2,12 +2,17 @@
 	import { onMount } from 'svelte'
     import Answer from './Answer.svelte'
 
+    //props
+    export let wrongAnswer, correctAnswer
+
     const baseURL = 'https://jservice.io/api/'
 
     let categories = []
     let gameReady = false
     let answering = false
     let selectedClue = null;
+
+	onMount(async () => getData(calcCategories(5)))
 
     const calcCategories = (quantity) => {
         let results = []
@@ -42,8 +47,6 @@
             })
         }
     }
-
-	onMount(async () => getData(calcCategories(5)))
 
     $: if (categories.length === 5 && !gameReady) {
         console.log('======= RETRYING =======')
@@ -115,8 +118,10 @@
         {/each}
     </div>
     {#if answering}
-        <Answer on:click={disableTile} selectedClue={selectedClue} />
+        <Answer on:click={disableTile} selectedClue={selectedClue} wrongAnswer={wrongAnswer} correctAnswer={correctAnswer} />
     {/if}
+{:else}
+    <p class="loadingText">Loading clues...</p>
 {/if}
 
 
@@ -134,12 +139,13 @@
     }
     .tile {
         height: 100px;
-        background-color: lightblue;
+        background-color: white;
         border: 1px solid grey;
         display: grid;
         align-items: center;
         border-radius: 10px;
         font-size: 60px;
+        box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, 0.068);
     }
     .category {
         font-size: 25px;
@@ -150,11 +156,14 @@
         cursor: pointer;
     }
     .enabled:hover {
-        background-color: white;
+        background-color: rgb(222, 223, 224);
     }
     .disabled {
-        background-color: white;
+        background-color: lightsteelblue;
         cursor: default;
+    }
+    .loadingText {
+        font-style: italic;
     }
     
 </style>
